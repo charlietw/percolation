@@ -1,0 +1,11 @@
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!PercolationStats.java
+!Percolation.java
+!PercolationManual.java
+
+
+# etc...
