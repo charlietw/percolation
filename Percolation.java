@@ -89,18 +89,17 @@ public class Percolation {
 
     // opens the site (row, col) if it is not open already
     public void open(int row, int col) {
-        int[] adjacent = new int[4]; // all possible adjacent locations
+
         validateInput(row, col);
         int n = coordsToInt(row, col);
         if (!openSite[n]) {
             openSite[n] = true; // opens the location
             openSites += 1;
         }
+        int[] adjacent = {
+                up(n), down(n), left(n), right(n)
+        }; // all possible adjacent locations
 
-        adjacent[0] = up(n);
-        adjacent[1] = down(n);
-        adjacent[2] = left(n);
-        adjacent[3] = right(n);
 
         // if it is first row, connect to virtual top site
         if (adjacent[0] == -1) {

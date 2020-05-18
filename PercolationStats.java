@@ -8,9 +8,8 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
-    private int[] results;
+    private static final double CONFIDENCE = 1.96;
     private final int trials;
-    private final int grid;
     private final double mean;
     private final double stddev;
 
@@ -19,25 +18,25 @@ public class PercolationStats {
         if (n <= 0 || trials <= 0) {
             throw new IllegalArgumentException();
         }
+        int[] results;
         this.trials = trials;
-        this.grid = n;
         results = new int[trials];
 
         // for each trial
         for (int i = 0; i < trials; i++) {
-            Percolation test = new Percolation(grid);
+            Percolation test = new Percolation(n);
             // for as long as it doesn't percolate, keep opening tiles
             while (!test.percolates()) {
-                int h = StdRandom.uniform(1, grid + 1);
-                int j = StdRandom.uniform(1, grid + 1);
+                int h = StdRandom.uniform(1, n + 1);
+                int j = StdRandom.uniform(1, n + 1);
                 if (!test.isOpen(h, j)) {
                     test.open(h, j);
                 }
             }
             results[i] = test.numberOfOpenSites();
         }
-        mean = StdStats.mean(results) / (grid * grid);
-        stddev = StdStats.stddev(results) / (grid * grid);
+        mean = StdStats.mean(results) / (n * n);
+        stddev = StdStats.stddev(results) / (n * n);
     }
 
     // sample mean of percolation threshold
@@ -52,12 +51,12 @@ public class PercolationStats {
 
     // low endpoint of 95% confidence interval
     public double confidenceLo() {
-        return mean - ((1.96 * stddev) / Math.sqrt(trials));
+        return mean - ((CONFIDENCE * stddev) / Math.sqrt(trials));
     }
 
     // high endpoint of 95% confidence interval
     public double confidenceHi() {
-        return mean + ((1.96 * stddev) / Math.sqrt(trials));
+        return mean + ((CONFIDENCE * stddev) / Math.sqrt(trials));
     }
 
     // test client
