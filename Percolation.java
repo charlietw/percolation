@@ -9,12 +9,11 @@ import edu.princeton.cs.algs4.WeightedQuickUnionUF;
  *  made to the provided 'WeightQuickUnionUF' class.
  **************************************************************************** */
 public class Percolation {
-    private WeightedQuickUnionUF grid;
-    private int gridLimit;
-    private int gridSize;
-    private int gridTotalSize; // initial grid squared
-    private int virtualTop;
-    private int virtualBot;
+    private final WeightedQuickUnionUF grid;
+    private final int gridLimit;
+    private final int gridSize;
+    private final int virtualTop;
+    private final int virtualBot;
     private int openSites;
     private boolean[] openSite;
 
@@ -35,7 +34,7 @@ public class Percolation {
 
     // validates input to functions
     private void validateInt(int n) {
-        if (n > gridLimit || n < 0 || n >= gridSize) {
+        if (n > gridLimit || n < 1) {
             throw new IllegalArgumentException();
         }
     }
@@ -160,10 +159,8 @@ public class Percolation {
 
     // // test client (optional)
     public static void main(String[] args) {
-        Percolation test = new Percolation(5);
-        //System.out.println(test.grid.connected(0, 5));
-        System.out.println(test.grid.count());
-        test.open(1, 1);
+        Percolation test = new Percolation(10);
+        test.open(0, 5);
         test.open(2, 1);
         // System.out.println(test.grid.find(test.coordsToInt(2, 1)));
         test.open(3, 1);

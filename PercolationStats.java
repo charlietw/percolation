@@ -5,28 +5,61 @@
  **************************************************************************** */
 
 import edu.princeton.cs.algs4.StdRandom;
+import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
+    private int[] results;
+    private final int trials;
+    private final int grid;
+    private final double mean;
+    private final double stddev;
 
     // perform independent trials on an n-by-n grid
     public PercolationStats(int n, int trials) {
         if (n <= 0 || trials <= 0) {
             throw new IllegalArgumentException();
         }
+        this.trials = trials;
+        this.grid = n;
+        results = new int[trials];
+
+        // for each trial
+        for (int i = 0; i < trials; i++) {
+            Percolation test = new Percolation(grid);
+            // for as long as it doesn't percolate, keep opening tiles
+            while (!test.percolates()) {
+                int h = StdRandom.uniform(1, grid + 1);
+                int j = StdRandom.uniform(1, grid + 1);
+                if (!test.isOpen(h, j)) {
+                    test.open(h, j);
+                }
+            }
+            results[i] = test.numberOfOpenSites();
+        }
+        mean = StdStats.mean(results) / (grid * grid);
+        stddev = StdStats.stddev(results) / (grid * grid);
     }
 
-    // // sample mean of percolation threshold
-    // public double mean()
-    //
-    // // sample standard deviation of percolation threshold
-    // public double stddev()
-    //
-    // // low endpoint of 95% confidence interval
-    // public double confidenceLo()
-    //
-    // // high endpoint of 95% confidence interval
-    // public double confidenceHi()
-    //
+    // sample mean of percolation threshold
+    public double mean() {
+        return mean;
+    }
+
+    // sample standard deviation of percolation threshold
+    public double stddev() {
+        return stddev;
+    }
+
+    // low endpoint of 95% confidence interval
+    public double confidenceLo() {
+        return mean - ((1.96 * stddev) / Math.sqrt(trials));
+    }
+
+    // high endpoint of 95% confidence interval
+    public double confidenceHi() {
+        return mean + ((1.96 * stddev) / Math.sqrt(trials));
+    }
+
     // test client
     public static void main(String[] args) {
         int n = 10;
@@ -35,20 +68,12 @@ public class PercolationStats {
             n = Integer.parseInt(args[0]);
             t = Integer.parseInt(args[1]);
         }
-        Percolation test = new Percolation(n);
-        // for as long as it doesn't percolate, keep opening tiles
-        while (!test.percolates()) {
-            System.out.println("Starting again...");
-            int i = StdRandom.uniform(1, n + 1);
-            int j = StdRandom.uniform(1, n + 1);
-            if (!test.isOpen(i, j)) {
-                test.open(i, j);
-            }
-            else {
-                System.out.println("already open");
-            }
-        }
-        System.out.println(test.numberOfOpenSites());
+        PercolationStats stats = new PercolationStats(n, t);
+        System.out.println(stats.mean());
+        System.out.println(stats.stddev());
+        System.out.println(stats.confidenceLo());
+        System.out.println(stats.confidenceHi());
+
     }
 
 }
